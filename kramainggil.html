@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Pop-up Interaktif</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3e2723 0%, #5d4037 50%, #6d4c41 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: #d7ccc8;
+            font-size: 1.2em;
+        }
+
+        .columns-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .column {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.8s ease;
+            animation-fill-mode: both;
+        }
+
+        .column:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .column:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .column:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .column:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .column-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #8d6e63, #a1887f);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .column:hover .column-icon {
+            transform: rotate(360deg) scale(1.1);
+        }
+
+        .column h2 {
+            color: #fff;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .column p {
+            color: #efebe9;
+            line-height: 1.8;
+            text-align: center;
+            font-size: 1.05em;
+        }
+
+        .column ul {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .column ul li {
+            color: #d7ccc8;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .column ul li:hover {
+            padding-left: 10px;
+            color: #fff;
+        }
+
+        .column ul li::before {
+            content: "✓ ";
+            color: #a1887f;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .button-container {
+            text-align: center;
+            animation: fadeInUp 0.8s ease 0.4s;
+            animation-fill-mode: both;
+        }
+
+        .popup-button {
+            background: linear-gradient(135deg, #8d6e63, #a1887f);
+            color: #fff;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .popup-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .popup-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .popup-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .popup-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Pop-up Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #5d4037, #6d4c41);
+            border-radius: 30px;
+            padding: 50px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            border: 3px solid rgba(255,255,255,0.2);
+            animation: slideDown 0.5s ease;
+            transform-origin: top center;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            margin: 0 auto 30px;
+        }
+
+        .modal h2 {
+            color: #fff;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal p {
+            color: #efebe9;
+            text-align: center;
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 15px 40px;
+            border: 2px solid #fff;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-btn-primary {
+            background: #fff;
+            color: #5d4037;
+        }
+
+        .modal-btn-primary:hover {
+            background: transparent;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .modal-btn-secondary {
+            background: transparent;
+            color: #fff;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #fff;
+            color: #5d4037;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .columns-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .modal {
+                padding: 30px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📜 Krama Alus 📜</h1>
+            <p></p>
+        </div>
+
+        <div class="columns-container">
+            <div class="column">
+                <div class="column-icon">❔</div>
+                <h2>Pangerten</h2>
+                <p>Pengertian bahasa krama alus adalah bahasa yang kalimatnya semua memakai bahasa krama alus/inggil"</p>
+                
+            </div>
+
+            <div class="column">
+                <div class="column-icon">🔍</div>
+                <h2>Panggonane</h2>
+                <ul>
+                    <li>Wong enom marang wong tuwa.</li>
+                    <li>Batur marang bendarane.</li>
+                    <li>Murid marang gurune.</li>
+					<li>Andhahan marang pimpinane.</li>
+					<li>Kanca karo kanca sing durung kulina.</li>
+                </ul>
+            </div>
+
+            <div class="column">
+                <div class="column-icon">💡</div>
+                <h2>Tuladha</h2>
+                 <ul>
+                    <li>"Kula badhe matur dhateng ibu, bilih manawi saestu sowan dhateng eyang, kula badhe tumut."</li>
+                    <li>"Tindak-tandukipun kanca kula ingkang naminipun Edo punika sanget"</li>
+                    </ul>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="popup-button" id="openPopupBtn">
+                <span>Wiwiti Latihan</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Pop-up -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <button class="modal-close" id="closeModalBtn">×</button>
+            <div class="modal-icon">📝</div>
+            <h2>Latihan Krama Alus</h2>
+            <p>Uji seberapa jauh kemampuan bahasa Jawamu!<p>
+            <div class="cards-wrapper" id="cardsWrapper">					
+				<button class="modal-btn modal-btn-primary""><a href="quiskramaalus.html">
+				<a href="quiskramaalus.html"> <div class="card-icon">Mulai</div></a>
+				<button class="modal-btn modal-btn-secondary" id="laterBtn">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const openPopupBtn = document.getElementById('openPopupBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const claimBtn = document.getElementById('claimBtn');
+        const laterBtn = document.getElementById('laterBtn');
+
+        // Open modal
+        openPopupBtn.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Close modal functions
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        laterBtn.addEventListener('click', closeModal);
+
+        // Close modal when clicking outside
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // Close with ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
