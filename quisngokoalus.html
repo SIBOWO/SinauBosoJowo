@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quiz Bernuansa Jawa dengan Skor</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    min-height: 100vh;
+    background-color: #3d2817;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .batik-pattern {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+    z-index: 1;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    margin: 50px auto;
+    background: #6f4e37;
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    padding: 30px 40px;
+  }
+  
+  .quiz-title {
+    font-size: 2.4rem;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    margin-bottom: 20px;
+    letter-spacing: 1.5px;
+    text-shadow: 3px 3px 3px #3c2f2f;
+    color: #f5e6d3;
+  }
+  
+  .question {
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+    font-family: 'Georgia', serif;
+    color: #f5e6d3;
+  }
+  
+  .options {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+  
+  .options li {
+    background: #8b6d5c;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-family: 'Georgia', serif;
+    box-shadow: 2px 2px 5px #3c2f2f;
+    transition: all 0.3s ease;
+    color: #f5e6d3;
+  }
+  
+  .options li:hover {
+    background: #a78360;
+    box-shadow: 3px 3px 10px #543f31;
+    color: #fff;
+  }
+  
+  input[type="radio"] {
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  button {
+    background-color: #7c5e32;
+    color: #f5e6d3;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    box-shadow: 2px 2px 6px #3c2f2f;
+    display: block;
+    margin: 0 auto;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #996633;
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .result {
+    font-size: 1.3rem;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+  <svg class="batik-pattern" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <!-- Pattern Batik Parang -->
+            <pattern id="batikPattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+                <!-- Background pattern -->
+                <rect width="200" height="200" fill="#3d2817"/>
+                
+                <!-- Motif Parang -->
+                <path d="M 20 20 Q 40 40 60 20 T 100 20" stroke="#8b6914" stroke-width="2" fill="none" opacity="0.6"/>
+                <path d="M 30 40 Q 50 60 70 40 T 110 40" stroke="#8b6914" stroke-width="2" fill="none" opacity="0.6"/>
+                <path d="M 25 60 Q 45 80 65 60 T 105 60" stroke="#d4a574" stroke-width="1.5" fill="none" opacity="0.5"/>
+                
+                <!-- Motif Kawung -->
+                <circle cx="150" cy="50" r="15" fill="none" stroke="#8b6914" stroke-width="2" opacity="0.5"/>
+                <circle cx="150" cy="50" r="8" fill="none" stroke="#d4a574" stroke-width="1" opacity="0.6"/>
+                <circle cx="145" cy="45" r="3" fill="#8b6914" opacity="0.4"/>
+                <circle cx="155" cy="45" r="3" fill="#8b6914" opacity="0.4"/>
+                <circle cx="145" cy="55" r="3" fill="#8b6914" opacity="0.4"/>
+                <circle cx="155" cy="55" r="3" fill="#8b6914" opacity="0.4"/>
+                
+                <!-- Isen-isen (detail kecil) -->
+                <circle cx="35" cy="90" r="2" fill="#d4a574" opacity="0.5"/>
+                <circle cx="75" cy="95" r="2" fill="#d4a574" opacity="0.5"/>
+                <circle cx="55" cy="100" r="2" fill="#d4a574" opacity="0.5"/>
+                
+                <!-- Motif Parang berlanjut -->
+                <path d="M 120 80 Q 140 100 160 80 T 200 80" stroke="#8b6914" stroke-width="2" fill="none" opacity="0.6"/>
+                <path d="M 10 120 Q 30 140 50 120 T 90 120" stroke="#d4a574" stroke-width="1.5" fill="none" opacity="0.5"/>
+                
+                <!-- Motif bunga sederhana -->
+                <path d="M 150 150 L 155 140 L 160 150 Z" fill="#8b6914" opacity="0.4"/>
+                <path d="M 150 150 L 145 160 L 140 150 Z" fill="#8b6914" opacity="0.4"/>
+                <circle cx="150" cy="150" r="4" fill="#d4a574" opacity="0.6"/>
+                
+                <!-- Garis-garis diagonal halus -->
+                <line x1="0" y1="180" x2="40" y2="200" stroke="#8b6914" stroke-width="1" opacity="0.3"/>
+                <line x1="60" y1="180" x2="100" y2="200" stroke="#8b6914" stroke-width="1" opacity="0.3"/>
+                
+                <!-- Titik-titik cecek -->
+                <circle cx="90" cy="30" r="1.5" fill="#d4a574" opacity="0.6"/>
+                <circle cx="95" cy="35" r="1.5" fill="#d4a574" opacity="0.6"/>
+                <circle cx="100" cy="30" r="1.5" fill="#d4a574" opacity="0.6"/>
+                
+                <circle cx="20" cy="160" r="1.5" fill="#d4a574" opacity="0.6"/>
+                <circle cx="25" cy="165" r="1.5" fill="#d4a574" opacity="0.6"/>
+                <circle cx="30" cy="160" r="1.5" fill="#d4a574" opacity="0.6"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#batikPattern)"/>
+  </svg>
+
+  <!-- Quiz Container -->
+  <div class="container">
+    <div class="quiz-title">UJI KEMAMPUAN NGOKO ALUS</div>
+    <div class="question" id="question">Apa nama alat musik yang terkenal dari Jawa?</div>
+    <ul class="options" id="options">
+      <!-- opsi akan diisi lewat JavaScript -->
+    </ul>
+    <button id="submitBtn" type="button">Kirim Jawaban</button>
+    <div class="result" id="result"></div>
+  </div>
+
+<script>
+  // Data pertanyaan dan jawaban
+  const quizData = [
+    {
+      question: "Ukara Ngoko Alus sing paling bener nggunakake tembung ganti wong kapindho (orang kedua)...",
+      options: ["Panjenengan", "Kowe", "Sampeyan", "Njenengan."],
+      correct: "Sampeyan"
+    },
+    {
+      question: "Tembung 'turu' kudu diganti apa yen ukara Ngoko Lugu diowahi dadi Ngoko Alus?",
+      options: ["sare","tilem", "mapan", "bobok"],
+      correct: "sare"
+    },
+    {
+      question: "Ukara ing ngisor iki sing kalebu Ngoko Alus yaiku...",
+      options: ["Kowe wingi wis teka menyang dalemku", "Bapak lagi wae sare ing kamar", "Sampeyan badhe tindak menyang Jakarta?", "Kowe sesuk arep tindak jam pira?"],
+      correct: "Kowe sesuk arep tindak jam pira?"
+    },
+	{
+	question: "Tembung 'omah' nalika dianggo ing Ngoko Alus bisa diganti dadi...",
+    options: ["omah", "griya", "dalem", "dalemmu"],
+    correct: "griya"
+    },
+	{
+	question: "Ngoko Alus paling cocok digunakake nalika bocah ngomong karo...",
+    options: ["Kanca dolane sing wis akrab", "Bapake utawa Ibuke", "Kakak kandunge sing wis luwih tuwa", "Adhine dhewe"],
+    correct: "Kakak kandunge sing wis luwih tuwa"
+	},
+  ];
+
+  let currentIndex = 0;
+  let score = 0;
+
+  const questionEl = document.getElementById('question');
+  const optionsEl = document.getElementById('options');
+  const submitBtn = document.getElementById('submitBtn');
+  const resultEl = document.getElementById('result');
+
+  // Fungsi render pertanyaan dan opsi
+  function loadQuestion() {
+    // Reset hasil
+    resultEl.textContent = "";
+    const currentQuiz = quizData[currentIndex];
+    questionEl.textContent = currentQuiz.question;
+    optionsEl.innerHTML = "";
+    currentQuiz.options.forEach((option, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<label><input type="radio" name="answer" value="${option}"> ${option}</label>`;
+      optionsEl.appendChild(li);
+    });
+  }
+
+  // Fungsi cek jawaban dan skor
+  submitBtn.addEventListener('click', () => {
+    const selected = document.querySelector('input[name="answer"]:checked');
+    if (!selected) {
+      alert('Silakan pilih jawaban terlebih dahulu!');
+      return;
+    }
+
+    const answer = selected.value;
+    const currentQuiz = quizData[currentIndex];
+
+    if (answer === currentQuiz.correct) {
+      score++;
+      resultEl.style.color = "#90EE90"; // hijau terang
+      resultEl.textContent = "Jawaban benar!";
+    } else {
+      resultEl.style.color = "#FF6B6B"; // merah terang
+      resultEl.textContent = `Jawaban salah! Jawaban yang benar: ${currentQuiz.correct}`;
+    }
+
+    // Mempersiapkan pertanyaan berikutnya atau akhiri quiz
+    currentIndex++;
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+      if (currentIndex < quizData.length) {
+        loadQuestion();
+        submitBtn.disabled = false;
+      } else {
+        // Tampilkan skor akhir
+        questionEl.textContent = "Quiz selesai!";
+        optionsEl.innerHTML = "";
+        resultEl.style.color = "#f5e6d3";
+        resultEl.textContent = `Skor Anda: ${score} dari ${quizData.length}`;
+        submitBtn.style.display = 'none';
+		
+      }
+    }, 2000);
+  });
+
+  // Load pertanyaan pertama
+  loadQuestion();
+</script>
+</body>
+</html>
